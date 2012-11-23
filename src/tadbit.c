@@ -692,6 +692,13 @@ tadbit(
       n -= remove[i];
    }
 
+   // Exit if dataset is pathological (small 'n').
+   if (n < 5) {
+      fprintf(stderr, "data set has less than 5 columns without NA\n");
+      // Flag for non normal exit status.
+      seg->maxbreaks = -1;
+      return;
+   }
    const int MAXBREAKS = n/5;
 
    _cache_index = (int *) malloc(n*n * sizeof(int));
@@ -860,6 +867,8 @@ tadbit(
    err = pthread_mutex_init(&tadbit_lock, NULL);
    if (err) {
       fprintf(stderr, "error initializing mutex (%d)\n", err);
+      // Flag for non normal exit status.
+      seg->maxbreaks = -1;
       return;
    }
 
@@ -892,6 +901,8 @@ tadbit(
          err = pthread_create(&(tid[i]), NULL, &fill_llikmat, &arg);
          if (err) {
             fprintf(stderr, "error creating thread (%d)\n", err);
+            // Flag for non normal exit status.
+            seg->maxbreaks = -1;
             return;
          }
       }

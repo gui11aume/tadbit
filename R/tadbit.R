@@ -42,6 +42,8 @@ tadbit <- function(x, n_CPU="auto", verbose=TRUE, max_tad_size="auto",
 
    tadbit_c_out <- (.Call("tadbit_R_call", x, n_CPU, verbose,
       max_tad_size, do_not_use_heuristic))
+   # Check that 'tadbit' exited successfully.
+   if (tadbit_c_out[[1]] == -1) stop('failure in tadbit', call.=FALSE)
 
    opt_nbreaks <- tadbit_c_out[[1]]
    llik_mat <- tadbit_c_out[[2]]

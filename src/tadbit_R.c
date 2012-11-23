@@ -84,6 +84,21 @@ tadbit_R_call(
 
    int maxbreaks = seg->maxbreaks;
 
+   // Check that tadbit exited successfully.
+   if (maxbreaks == -1) {
+      free(obs);
+      free(seg);
+      SEXP fail_SEXP;
+      PROTECT(fail_SEXP = allocVector(INTSXP, 1));
+      int *fail = INTEGER(fail_SEXP);
+      fail[0] = -1;
+      SEXP list_SEXP;
+      PROTECT(list_SEXP = allocVector(VECSXP, 1));
+      SET_VECTOR_ELT(list_SEXP, 0, fail_SEXP);
+      UNPROTECT(2);
+      return list_SEXP;
+   }
+
    // Copy output to R-readable variables.
    SEXP nbreaks_SEXP;
    SEXP passages_SEXP;
